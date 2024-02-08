@@ -1,8 +1,29 @@
-# Frames.js Starter Kit
+# Farcaster Arcade
 
-This is a boilerplate repo to get started quickly with `frames.js`
+This is the repo for the /arcade marketing page
 
 ## Quickstart
+
+- Requirements:
+
+1. Node Version 18
+1. [Bun](https://bun.sh/)
+
+- Initial setup:
+
+```sh
+bun upgrade /
+bun install /
+cp .env.example .env /
+```
+
+- Get copy of env file from another dev
+
+- Start dev server:
+
+  ```sh
+  bun run dev
+  ```
 
 1. Install dependencies `yarn install`
 
@@ -12,24 +33,13 @@ This is a boilerplate repo to get started quickly with `frames.js`
 
 4. Edit `app/page.tsx`
 
-5. Visit [http://localhost:3000/debug](http://localhost:3000/debug) to debug your frame.
+- Debug frames:
+  Visit [http://localhost:3000/debug](http://localhost:3000/debug) to debug your frame.
 
-6. (Optional) To use a real signer (costs warps), copy `.env.sample` to `.env` and fill in the env variables following the comments provided
+(Optional) To use a real signer (costs warps), copy `.env.sample` to `.env` and fill in the env variables following the comments provided
 
 ## Docs, Questions and Help
 
 - [Frames.js Documentation](https://framesjs.org)
 - [Awesome frames](https://github.com/davidfurlong/awesome-frames?tab=readme-ov-file)
 - Join the [/frames-dev](https://warpcast.com/~/channel/frames-devs) channel on Farcaster to ask questions
-
-## If you get stuck or have feedback, [Message @df please!](https://warpcast.com/df)
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy
-
-```bash
-vercel
-```
-
-more deployment links coming soon, PRs welcome!
