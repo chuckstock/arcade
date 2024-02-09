@@ -148,9 +148,9 @@ export default function Page({
   const baseUrl = process.env.NEXT_PUBLIC_HOST || 'http://localhost:3000'
 
   return (
-    <div className='font-mono'>
-      <div className=''>
-        <div className='bg-slate-100 mb-4 p-4'>
+    <div>
+      <div>
+        <div className='mb-4 p-4'>
           <div className='flex flex-row gap-4 items-center'>
             <h2 className='font-bold'>Frames.js debugger</h2>
             <form

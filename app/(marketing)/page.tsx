@@ -1,10 +1,8 @@
 import { DEBUG_HUB_OPTIONS } from '@/app/(frames)/debug/constants'
-import { getTokenUrl } from 'frames.js'
 import {
   FrameButton,
   FrameContainer,
   FrameImage,
-  FrameInput,
   FrameReducer,
   NextServerPageProps,
   getFrameMessage,
@@ -12,19 +10,27 @@ import {
   useFramesReducer,
 } from 'frames.js/next/server'
 
-type State = {
-  active: string
-  total_button_presses: number
+const initialState = {
+  active: null as string | null,
+  total_button_presses: 0,
+  page: 'start' as 'start' | 'flip',
 }
 
-const initialState = { active: '1', total_button_presses: 0 }
+type State = typeof initialState
 
 const reducer: FrameReducer<State> = (state, action) => {
+  let buttonIndex = action.postBody?.untrustedData.buttonIndex
+  let active = buttonIndex !== null ? String(buttonIndex) : null
+  let page = state.page
+  if (state.page === 'start') {
+    page = 'flip'
+    active = null
+  }
+
   return {
+    page,
     total_button_presses: state.total_button_presses + 1,
-    active: action.postBody?.untrustedData.buttonIndex
-      ? String(action.postBody?.untrustedData.buttonIndex)
-      : '1',
+    active,
   }
 }
 
@@ -55,25 +61,10 @@ export default async function Home({
 
   // Example with satori and sharp:
   // const imageUrl = await
-  frameMessage
 
   console.log('info: state is:', state)
 
   if (frameMessage) {
-    const {
-      isValid,
-      buttonIndex,
-      inputText,
-      castId,
-      requesterFid,
-      casterFollowsRequester,
-      requesterFollowsCaster,
-      likedCast,
-      recastedCast,
-      requesterVerifiedAddresses,
-      requesterUserData,
-    } = frameMessage
-
     console.log('info: frameMessage is:', frameMessage)
   }
 
@@ -94,34 +85,65 @@ export default async function Home({
           "Coin Operated Frames" for playing games on Farcaster.
         </p>
       </div>
+      <h1 className='text-4xl font-bold mb-6 mt-8 text-yellow-400'>
+        Arcade Machines
+      </h1>
+      <div className='flex flex-col space-y-6'>
+        <p>
+          The Arcade Machines are a collection of NFTs that represent the
+          virtual machines that will be used to play games on Farcaster.
+        </p>
+        <p>
+          Machine owners will be able to upgrade and add different games to
+          their machines. The more of the games that are played on their
+          machine, the more $COINS they will earn.
+        </p>
+        <p>
+          Games will have a limited number of arcade machines that they can be
+          played on. So there will be initial gaming launches for every new game
+          launched in the Arcade.
+        </p>
+      </div>
       <FrameContainer
         postUrl='/frames'
         state={state}
         previousFrame={previousFrame}
       >
-        {/* <FrameImage src="https://framesjs.org/og.png" /> */}
         <FrameImage>
           <div tw='w-full h-full bg-slate-700 text-white justify-center items-center'>
-            {frameMessage?.inputText ? frameMessage.inputText : 'Hello world'}
+            {(() => {
+              switch (state.page) {
+                case 'start': {
+                  return 'Press Start'
+                }
+                case 'flip': {
+                  return state.active === '1'
+                    ? 'Heads'
+                    : state.active === '2'
+                    ? 'Tails'
+                    : 'Flip a Coin'
+                }
+                default: {
+                  return 'Flip a Coin'
+                }
+              }
+            })()}
           </div>
         </FrameImage>
-        <FrameInput text='put some text here' />
-        <FrameButton onClick={dispatch}>
-          {state?.active === '1' ? 'Active' : 'Inactive'}
-        </FrameButton>
-        <FrameButton onClick={dispatch}>
-          {state?.active === '2' ? 'Active' : 'Inactive'}
-        </FrameButton>
-        <FrameButton
-          mint={getTokenUrl({
-            address: '0x060f3edd18c47f59bd23d063bbeb9aa4a8fec6df',
-            tokenId: '123',
-            chainId: 7777777,
-          })}
-        >
-          Mint
-        </FrameButton>
-        <FrameButton href={`https://www.google.com`}>External</FrameButton>
+        {state.page === 'start' ? (
+          <FrameButton onClick={dispatch}>🪙 Start</FrameButton>
+        ) : null}
+
+        {state.page === 'flip' ? (
+          <FrameButton key='1' onClick={dispatch}>
+            Heads
+          </FrameButton>
+        ) : null}
+        {state.page === 'flip' ? (
+          <FrameButton key='2' onClick={dispatch}>
+            Tails
+          </FrameButton>
+        ) : null}
       </FrameContainer>
     </section>
   )

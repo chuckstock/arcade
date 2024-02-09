@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 
 export default function MarketingLayout({ children }: { children: ReactNode }) {
   return (
-    <div className='bg-[#0d1117] text-white min-h-screen flex flex-col'>
+    <div className='min-h-screen flex flex-col'>
       <div className='flex justify-center border-b border-gray-700 '>
         <MainNav />
       </div>
