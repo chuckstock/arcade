@@ -1,96 +1,114 @@
-export default function TokenomicsPage() {
+import { NextServerPageProps } from '@/lib/utils'
+import { getFrameMetadata } from '@coinbase/onchainkit'
+import { kv } from '@vercel/kv'
+import { Metadata } from 'next'
+
+export async function generateMetadata(): Promise<Metadata> {
+  // Fetchs some basic stats to pass to metadata
+  const flipCount = await kv.get('flips')
+
+  const frameMetadata = getFrameMetadata({
+    buttons: [
+      {
+        label: 'Play ▶️',
+      },
+      {
+        label: 'Leaderboard 🏆',
+      },
+    ],
+    image: `${process.env.NEXT_PUBLIC_HOST}/api/images/splash?flips=${1000}`,
+    post_url: `${
+      process.env.NEXT_PUBLIC_HOST
+    }/api/menu?buttons=${encodeURIComponent(
+      'start,leaderboard' // Buttons should be passed to the menu router
+    )}`,
+  })
+
+  return {
+    title: "Farcaster Arcade - Let's Play!",
+    description: '',
+    openGraph: {
+      title: "Farcaster Arcade - Let's Play!",
+      description: '',
+      images: [`${process.env.DOMAIN}/api/image/splash?flips=${1000}`],
+    },
+    other: {
+      ...frameMetadata,
+    },
+  }
+}
+export default async function Home({ searchParams }: NextServerPageProps) {
   return (
     <section className='max-w-3xl mx-auto'>
-      <h2 className='text-3xl font-bold mb-4 text-yellow-400'>Tokenomics</h2>
+      <h1 className='text-4xl font-bold mb-6 text-yellow-400'>$COINS</h1>
+      <div className='flex flex-col space-y-6'>
+        <p>
+          Coins, an ERC-20 token on Base, will launch in February 2024 with an
+          airdrop to the Arcade community on Farcaster. Coins will be used to
+          play games, earn rewards, and participate in governance.
+        </p>
+        <p>
+          The purpose of the Arcade is to build a collection of the must fun
+          "Coin Operated Frames" for playing games on Farcaster.
+        </p>
+      </div>
+      <h1 className='text-4xl font-bold mb-6 mt-8 text-yellow-400'>
+        Arcade Machines
+      </h1>
+      <div className='flex flex-col space-y-6'>
+        <p>
+          The Arcade Machines are a collection of NFTs that represent the
+          virtual machines that will be used to play games on Farcaster.
+        </p>
+        <p>
+          Machine owners will be able to upgrade and add different games to
+          their machines. The more of the games that are played on their
+          machine, the more $COINS they will earn.
+        </p>
+        <p>
+          Games will have a limited number of arcade machines that they can be
+          played on. So there will be initial gaming launches for every new game
+          launched in the Arcade.
+        </p>
+      </div>
+      {/* <FrameContainer
+        postUrl='/api/frames'
+        state={state}
+        previousFrame={previousFrame}
+      >
+        <FrameImage>
+          <div tw='w-full h-full bg-slate-700 text-white justify-center items-center'>
+            <h1>test</h1>
+            {(() => {
+              switch (state.page) {
+                case 'start': {
+                  return 'Press Start'
+                }
+                case 'flip': {
+                  return state.selected || 'Flip a Coin'
+                }
+                default: {
+                  return 'Flip a Coin'
+                }
+              }
+            })()}
+          </div>
+        </FrameImage>
+        {state.page === 'start' ? (
+          <FrameButton onClick={dispatch}>🪙 Start</FrameButton>
+        ) : null}
 
-      <p>Coming Soon...</p>
-      {/* <svg
-            width='500'
-            height='500'
-            viewBox='-250,-250,500,500'
-            className='text-xs'
-          >
-            <g stroke='#cbd5e1'>
-              <path
-                fill='#8b5cf6'
-                d='M0,-249A249,249,0,0,1,201.445,-146.359L0,0Z'
-              >
-                <title>LP: 15</title>
-              </path>
-              <path
-                fill='#fbbf24'
-                d='M201.445,-146.359A249,249,0,1,1,-201.445,-146.359L0,0Z'
-              >
-                <title>Community: 70</title>
-              </path>
-              <path
-                fill='#d946ef'
-                d='M-201.445,-146.359A249,249,0,0,1,0,-249L0,0Z'
-              >
-                <title>Ecosystem: 15</title>
-              </path>
-            </g>
-            <g text-anchor='middle'>
-              <text transform='translate(79.130544104603,-155.3024371660325)'>
-                <tspan
-                  y='-0.4em'
-                  font-weight='semibold'
-                  font-size='1.25em'
-                  fill='#0f172a'
-                >
-                  LP
-                </tspan>
-                <tspan x='0' y='1em' font-size='1.25em' fill='#0f172a'>
-                  15%
-                </tspan>
-              </text>
-              <text transform='translate(1.0672796854569182e-14,174.29999999999998)'>
-                <tspan
-                  y='-0.4em'
-                  font-weight='semibold'
-                  font-size='1.25em'
-                  fill='#0f172a'
-                >
-                  Community
-                </tspan>
-                <tspan x='0' y='1em' font-size='1.25em' fill='#0f172a'>
-                  70%
-                </tspan>
-              </text>
-              <text transform='translate(-79.13054410460302,-155.3024371660325)'>
-                <tspan
-                  y='-0.4em'
-                  font-weight='semibold'
-                  font-size='1.25em'
-                  fill='#0f172a'
-                >
-                  Ecosystem
-                </tspan>
-                <tspan x='0' y='1em' font-size='1.25em' fill='#0f172a'>
-                  15%
-                </tspan>
-              </text>
-            </g>
-          </svg>
-          <ul className='mt-8 list-inside list-disc'>
-            <li>
-              70% to Degen community
-              <ul className='list-inside list-disc pl-8'>
-                <li>15% to airdrop 1 (Completed)</li>
-                <li>20% to airdrop 2</li>
-                <li>25% to airdrop 3</li>
-                <li>10% to liquidity mining</li>
-              </ul>
-            </li>
-            <li>
-              15% for project development and ecosystem
-              <ul className='list-inside list-disc pl-8'>
-                <li>10% locked until July 8th, 2024</li>
-                <li>5% vesting over two years</li>
-              </ul>
-            </li>
-            <li>15% to liquidity pool</li>
-          </ul> */}
+        {state.page === 'flip' ? (
+          <FrameButton key='1' onClick={dispatch}>
+            Heads
+          </FrameButton>
+        ) : null}
+        {state.page === 'flip' ? (
+          <FrameButton key='2' onClick={dispatch}>
+            Tails
+          </FrameButton>
+        ) : null}
+      </FrameContainer> */}
     </section>
   )
 }
